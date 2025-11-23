@@ -1,0 +1,3 @@
+class OtherStyles {
+  // textbox styles
+}
