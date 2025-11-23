@@ -15,73 +15,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/images/splash_screen/forlet-logo.png',
-              width: 30,
-              height: 30,
-            ),
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                AppName,
-                style: AppTextStyles.heading20,
-              ),
-            ),
-          ],
-        ),
-        centerTitle: true,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: turquoise),
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/images/splash_screen/forlet-logo.png',
-                    width: 30,
-                    height: 30,
-                  ),
-                  SizedBox(
-                    width: 2.w,
-                  ),
-                  Text("$AppName Menu"),
-                ],
-              ),
-            ),
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(Icons.add_card_outlined),
-                  SizedBox(
-                    width: 2.w,
-                  ),
-                  Text('Post on $AppName'),
-                ],
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              title: Row(
-                children: [
-                  Icon(Icons.perm_contact_cal_outlined),
-                  SizedBox(
-                    width: 2.w,
-                  ),
-                  Text('My Account'),
-                ],
-              ),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
+      appBar: appBar,
+      drawer: appDrawer,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
