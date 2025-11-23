@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forlet_marketplace_ng/constants/colors.dart';
+import 'package:forlet_marketplace_ng/screens/register_screen.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/constant.dart';
@@ -13,11 +14,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // app functions
+  void viewRegisterScreen() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => RegisterScreen()),
+        (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar,
-      drawer: appDrawer,
+      drawer: appDrawer(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
@@ -55,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(
-                height: 8.0,
+                height: 1.h,
               ),
               TextField(
                 onChanged: (value) {},
@@ -69,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(
-                height: 24.0,
+                height: 2.h,
               ),
               Padding(
                 padding: EdgeInsets.all(20.0),
@@ -84,6 +93,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Login',
                     style: TextStyle(color: Colors.black, fontSize: 16),
                   ),
+                ),
+              ),
+              SizedBox(
+                height: 2.h,
+              ),
+              InkWell(
+                onTap: viewRegisterScreen,
+                child: Text(
+                  'Not yet a member? Click here to register.',
+                  style: AppTextStyles.body16,
                 ),
               ),
             ],

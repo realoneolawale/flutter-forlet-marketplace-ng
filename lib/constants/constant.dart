@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forlet_marketplace_ng/constants/text_style.dart';
+import 'package:forlet_marketplace_ng/screens/home_screen.dart';
+import 'package:forlet_marketplace_ng/screens/login_screen.dart';
 import 'package:sizer/sizer.dart';
 
 import 'colors.dart';
@@ -34,50 +36,75 @@ AppBar appBar = AppBar(
   centerTitle: true,
 );
 
-Drawer appDrawer = Drawer(
-  child: ListView(
-    padding: EdgeInsets.zero,
-    children: [
-      DrawerHeader(
-        decoration: BoxDecoration(color: turquoise),
-        child: Row(
-          children: [
-            Image.asset(
-              'assets/images/splash_screen/forlet-logo.png',
-              width: 30,
-              height: 30,
-            ),
-            SizedBox(
-              width: 2.w,
-            ),
-            Text("$AppName Menu"),
-          ],
+Drawer appDrawer(BuildContext context) {
+  return Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        DrawerHeader(
+          decoration: BoxDecoration(color: turquoise),
+          child: Row(
+            children: [
+              Image.asset(
+                'assets/images/splash_screen/forlet-logo.png',
+                width: 30,
+                height: 30,
+              ),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text("$AppName Menu"),
+            ],
+          ),
         ),
-      ),
-      ListTile(
-        title: Row(
-          children: [
-            Icon(Icons.add_card_outlined),
-            SizedBox(
-              width: 2.w,
-            ),
-            Text('Post on $AppName'),
-          ],
+        ListTile(
+          title: Row(
+            children: [
+              Icon(Icons.home_outlined),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text('Home'),
+            ],
+          ),
+          onTap: () => viewHomeScreen(context),
         ),
-        onTap: () {},
-      ),
-      ListTile(
-        title: Row(
-          children: [
-            Icon(Icons.perm_contact_cal_outlined),
-            SizedBox(
-              width: 2.w,
-            ),
-            Text('My Account'),
-          ],
+        ListTile(
+          title: Row(
+            children: [
+              Icon(Icons.add_card_outlined),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text('Post on $AppName'),
+            ],
+          ),
+          onTap: () {},
         ),
-        onTap: () {},
-      ),
-    ],
-  ),
-);
+        ListTile(
+          title: Row(
+            children: [
+              Icon(Icons.perm_contact_cal_outlined),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text('My Account'),
+            ],
+          ),
+          onTap: () => viewLoginScreen(context),
+        ),
+      ],
+    ),
+  );
+}
+
+// app functions
+void viewLoginScreen(BuildContext context) {
+  Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false);
+}
+
+void viewHomeScreen(BuildContext context) {
+  Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context) => HomeScreen()), (route) => false);
+}

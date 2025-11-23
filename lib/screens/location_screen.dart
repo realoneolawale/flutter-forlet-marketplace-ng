@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forlet_marketplace_ng/constants/text_style.dart';
+import 'package:forlet_marketplace_ng/screens/home_screen.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/colors.dart';
@@ -13,11 +14,21 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  // app function
+  void viewHomeScreen() {
+    void viewLocationScreen() {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+          (route) => false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar,
-      drawer: appDrawer,
+      drawer: appDrawer(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 8.0),
@@ -57,7 +68,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 onChanged: (value) {},
               ),
               SizedBox(
-                height: 8.0,
+                height: 2.h,
               ),
               DropdownButton<String>(
                 value: 'Abuja',
@@ -72,12 +83,12 @@ class _LocationScreenState extends State<LocationScreen> {
                 onChanged: (value) {},
               ),
               SizedBox(
-                height: 24.0,
+                height: 2.h,
               ),
               Padding(
                 padding: EdgeInsets.all(20.0),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: viewHomeScreen,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: turquoise,
                     //minimumSize: const Size(double.infinity, 50),

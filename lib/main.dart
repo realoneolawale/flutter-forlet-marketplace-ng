@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forlet_marketplace_ng/constants/constant.dart';
 import 'package:forlet_marketplace_ng/provider/account_provider.dart';
 import 'package:forlet_marketplace_ng/provider/home_provider.dart';
-import 'package:forlet_marketplace_ng/screens/location_screen.dart';
+import 'package:forlet_marketplace_ng/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: AppName,
           theme: ThemeData(),
-          home: LocationScreen(),
+          home: HomeScreen(),
         ),
       );
     });

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forlet_marketplace_ng/constants/colors.dart';
 import 'package:forlet_marketplace_ng/constants/constant.dart';
 import 'package:forlet_marketplace_ng/constants/text_style.dart';
+import 'package:forlet_marketplace_ng/screens/location_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,11 +13,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // app functions
+  void viewLocationScreen() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LocationScreen()),
+        (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar,
-      drawer: appDrawer,
+      drawer: appDrawer(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
@@ -45,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 2.h,
               ),
               InkWell(
+                onTap: viewLocationScreen,
                 child: Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -57,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                onTap: () {},
               ),
               SizedBox(
                 height: 2.h,
