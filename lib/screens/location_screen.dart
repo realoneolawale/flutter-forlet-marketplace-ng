@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:forlet_marketplace_ng/constants/text_style.dart';
+import 'package:forlet_marketplace_ng/models/dtos/lgas_get_dto.dart';
+import 'package:forlet_marketplace_ng/models/dtos/states_get_dto.dart';
 import 'package:forlet_marketplace_ng/screens/home_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/colors.dart';
 import '../constants/constant.dart';
+import '../provider/home_provider.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
@@ -14,6 +18,9 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  // screen variables
+  StateGetDto? selectedState;
+  LgasGetDto? selectedLga;
   // app function
   void viewHomeScreen() {
     void viewLocationScreen() {
@@ -25,13 +32,25 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() =>
+        Provider.of<HomeProvider>(context, listen: false).loadStateList());
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<HomeProvider>(context);
+    final states = provider.stateList ?? [];
+    final lgas = provider.lgaList ?? [];
+
     return Scaffold(
       appBar: appBar,
       drawer: appDrawer(context),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 8.0),
+        child: Container(
+          padding: screenPadding,
+          decoration: background,
           child: Column(
             children: [
               SizedBox(
@@ -45,9 +64,20 @@ class _LocationScreenState extends State<LocationScreen> {
                       Icons.location_on_outlined,
                       size: 40.sp,
                     ),
+                    SizedBox(
+                      height: 2.h,
+                    ),
                     Text(
                       'Change Location',
                       style: AppTextStyles.heading20,
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    Text(
+                      "${provider.location?.stateName ?? 'All locations'}"
+                      "${provider.location?.lgaName != null ? ' >> ${provider.location?.lgaName}' : ''}",
+                      style: AppTextStyles.body14,
                     ),
                   ],
                 ),
@@ -55,32 +85,72 @@ class _LocationScreenState extends State<LocationScreen> {
               SizedBox(
                 height: 2.h,
               ),
-              DropdownButton<String>(
-                value: 'Kogi',
-                isExpanded: true,
-                hint: Text(
-                  'Select a State',
-                  style: TextStyle(color: greyShade3, fontSize: 16),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color.fromRGBO(225, 225, 225, 1)),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                items: ['Kogi', 'Kwara', 'Kaduna']
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (value) {},
+                child: DropdownButton<StateGetDto>(
+                  value: selectedState,
+                  isExpanded: true,
+                  borderRadius: BorderRadius.circular(8.0),
+                  hint: Text(
+                    'Select a State',
+                    style: TextStyle(color: black, fontSize: 16),
+                  ),
+                  items: states
+                      .map(
+                        (state) => DropdownMenuItem<StateGetDto>(
+                          value: state,
+                          child: Text(state.stateName),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedState = value;
+                      Provider.of<HomeProvider>(context, listen: false)
+                          .loadLgaList(value?.id ?? 1);
+                      // update the provider state name and id value
+                      provider.setStateLocation(selectedState!);
+                    });
+                  },
+                ),
               ),
               SizedBox(
                 height: 2.h,
               ),
-              DropdownButton<String>(
-                value: 'Abuja',
-                isExpanded: true,
-                hint: Text(
-                  'Select an L.G.A',
-                  style: TextStyle(color: greyShade3, fontSize: 16),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color.fromRGBO(225, 225, 225, 1)),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                items: ['Abuja', 'Lagos', 'Benin']
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (value) {},
+                child: DropdownButton<LgasGetDto>(
+                  value: selectedLga,
+                  isExpanded: true,
+                  borderRadius: BorderRadius.circular(8.0),
+                  hint: Text(
+                    'Select an L.G.A',
+                    style: TextStyle(color: black, fontSize: 16),
+                  ),
+                  items: lgas
+                      .map(
+                        (lga) => DropdownMenuItem<LgasGetDto>(
+                          value: lga,
+                          child: Text(lga.lgaName),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedLga = value;
+                      // update the provider lga name value
+                      provider.setLgaLocation(selectedLga!);
+                    });
+                  },
+                ),
               ),
               SizedBox(
                 height: 2.h,

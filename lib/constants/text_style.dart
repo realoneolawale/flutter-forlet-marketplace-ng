@@ -44,7 +44,7 @@ class AppTextStyles {
     fontSize: 20.sp,
     fontWeight: FontWeight.normal,
     fontFamily: 'UberMoveMedium',
-    color: turquoise,
+    color: black,
   );
   static TextStyle body18 = TextStyle(
     fontSize: 18.sp,

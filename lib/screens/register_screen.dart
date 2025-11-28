@@ -20,8 +20,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       drawer: appDrawer(context),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 8.0),
+          child: Container(
+            padding: screenPadding,
+            decoration: background,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -83,8 +84,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   height: 2.h,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10.0),
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Color.fromRGBO(225, 225, 225, 1)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: DropdownButton<String>(
                     value: 'Male',
                     isExpanded: true,
@@ -153,8 +158,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   height: 2.h,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Color.fromRGBO(225, 225, 225, 1)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: DropdownButton<String>(
                     value: 'Kogi',
                     isExpanded: true,
@@ -171,8 +180,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   height: 2.h,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
+                Container(
+                  padding: EdgeInsets.only(left: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Color.fromRGBO(225, 225, 225, 1)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: DropdownButton<String>(
                     value: 'Abuja',
                     isExpanded: true,

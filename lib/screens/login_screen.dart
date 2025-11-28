@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forlet_marketplace_ng/constants/colors.dart';
+import 'package:forlet_marketplace_ng/screens/forgot_password_screen.dart';
 import 'package:forlet_marketplace_ng/screens/register_screen.dart';
 import 'package:sizer/sizer.dart';
 
@@ -22,14 +23,22 @@ class _LoginScreenState extends State<LoginScreen> {
         (route) => false);
   }
 
+  void viewForgotPasswordScreen() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+        (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar,
       drawer: appDrawer(context),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 8.0),
+        child: Container(
+          padding: screenPadding,
+          decoration: background,
           child: Column(
             children: [
               SizedBox(
@@ -56,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 onChanged: (value) {},
                 decoration: InputDecoration(
-                  hintText: 'Email or phone numeber',
+                  hintText: 'Email or phone number',
                   prefixIcon: Icon(Icons.info),
                   border: border,
                   enabledBorder: border,
@@ -102,6 +111,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: viewRegisterScreen,
                 child: Text(
                   'Not yet a member? Click here to register.',
+                  style: AppTextStyles.body16,
+                ),
+              ),
+              SizedBox(
+                height: 2.h,
+              ),
+              InkWell(
+                onTap: viewForgotPasswordScreen,
+                child: Text(
+                  'Forgot password? Click here to reset.',
                   style: AppTextStyles.body16,
                 ),
               ),

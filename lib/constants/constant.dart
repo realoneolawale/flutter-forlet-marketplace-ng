@@ -15,6 +15,18 @@ const border = OutlineInputBorder(
       left: Radius.circular(25.0), right: Radius.circular(25.0)),
 );
 
+// app-wide box decoration
+Decoration background = BoxDecoration(
+  gradient: LinearGradient(
+    colors: [turquoise, mustard],
+  ),
+);
+
+// app-wide padding
+EdgeInsetsGeometry screenPadding =
+    const EdgeInsets.fromLTRB(20.0, 0, 20.0, 20.0);
+
+// app-wide app bar
 AppBar appBar = AppBar(
   leading: null,
   title: Row(
@@ -24,12 +36,12 @@ AppBar appBar = AppBar(
         width: 30,
         height: 30,
       ),
-      Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Text(
-          AppName,
-          style: AppTextStyles.heading20,
-        ),
+      SizedBox(
+        width: 2.w,
+      ),
+      Text(
+        AppName,
+        style: AppTextStyles.heading20,
       ),
     ],
   ),
@@ -42,7 +54,11 @@ Drawer appDrawer(BuildContext context) {
       padding: EdgeInsets.zero,
       children: [
         DrawerHeader(
-          decoration: BoxDecoration(color: turquoise),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [turquoise, mustard],
+            ),
+          ),
           child: Row(
             children: [
               Image.asset(
