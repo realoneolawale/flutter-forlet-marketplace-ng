@@ -15,6 +15,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // app variable
+  TextEditingController usernameTextEditingController = TextEditingController();
+  TextEditingController passwordTextEditingController = TextEditingController();
   // app functions
   void viewRegisterScreen() {
     Navigator.pushAndRemoveUntil(

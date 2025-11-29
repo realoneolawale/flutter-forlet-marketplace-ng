@@ -4,9 +4,10 @@ class LocationDto {
   int? lgaId;
   String? lgaName;
 
-  LocationDto(
-      {this.stateId = 0,
-      this.stateName = '',
-      this.lgaId = 0,
-      this.lgaName = ''});
+  LocationDto({
+    this.stateId = 0,
+    this.stateName = null,
+    this.lgaId = 0,
+    this.lgaName = null,
+  });
 }

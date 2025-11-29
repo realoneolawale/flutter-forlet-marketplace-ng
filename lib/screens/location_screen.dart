@@ -23,12 +23,10 @@ class _LocationScreenState extends State<LocationScreen> {
   LgasGetDto? selectedLga;
   // app function
   void viewHomeScreen() {
-    void viewLocationScreen() {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-          (route) => false);
-    }
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (route) => false);
   }
 
   @override

@@ -1,13 +1,21 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:forlet_marketplace_ng/models/dtos/artisan_get_dto.dart';
+import 'package:forlet_marketplace_ng/screens/home_screen.dart';
+import 'package:forlet_marketplace_ng/services/home_service.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../constants/colors.dart';
 import '../constants/constant.dart';
 import '../constants/text_style.dart';
 import '../provider/home_provider.dart';
 
 class ArtisanDetailScreen extends StatefulWidget {
-  const ArtisanDetailScreen({super.key});
+  final int artisanId;
+
+  const ArtisanDetailScreen({super.key, required this.artisanId});
 
   @override
   State<ArtisanDetailScreen> createState() => _ArtisanDetailScreenState();
@@ -15,60 +23,305 @@ class ArtisanDetailScreen extends StatefulWidget {
 
 class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
   @override
+  void initState() {
+    super.initState();
+    // class the provide to get artisan preview details
+    Future.microtask(() => Provider.of<HomeProvider>(context, listen: false)
+        .loadArtisanPreviewDetailsById(widget.artisanId ?? 1));
+  }
+
+  @override
   Widget build(BuildContext context) {
     // initialize the provider
     final provider = Provider.of<HomeProvider>(context);
+    // get the artisans details using the getter in the provider
+    final artisanFullGetDto = provider.artisanFullGetDto;
 
     return Scaffold(
       appBar: appBar,
       drawer: appDrawer(context),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: screenPadding,
-            decoration: background,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Expanded(
-                      child: TextField(
-                        //onChanged: () {},
-                        decoration: InputDecoration(
-                          hintText: 'Search artisan...',
-                          prefixIcon: Icon(Icons.search),
-                          border: border,
-                          enabledBorder: border,
-                          focusedBorder: border,
-                        ),
-                      ),
-                    ),
-                  ],
+      body: _buildBody(provider, artisanFullGetDto),
+    );
+  }
+
+  Widget _buildBody(
+      HomeProvider provider, ArtisanFullGetDto artisanFullGetDto) {
+    if (provider.isLoading) {
+      return IntrinsicHeight(
+        child: Container(
+          height: MediaQuery.of(context).size.height, // Force full screen
+          padding: screenPadding,
+          decoration: background,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
+    if (provider.error != null) {
+      return IntrinsicHeight(
+        child: Container(
+          height: MediaQuery.of(context).size.height, // Force full screen
+          padding: screenPadding,
+          decoration: background,
+          child: Center(child: Text("Error: ${provider.error}")),
+        ),
+      );
+    }
+
+    return SafeArea(
+      child: Container(
+        height: MediaQuery.of(context).size.height, // Force full screen
+        padding: screenPadding,
+        decoration: background,
+        child: ListView(
+          children: [
+            SizedBox(
+              height: 2.h,
+            ),
+            Center(
+              child: CircleAvatar(
+                radius: 90.0,
+                backgroundColor: mustard,
+                backgroundImage: artisanFullGetDto.artisanAvatar != null
+                    ? NetworkImage(artisanFullGetDto.artisanAvatar!)
+                    : const AssetImage(
+                            'assets/images/splash_screen/noimage.jpg')
+                        as ImageProvider,
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            Center(
+              child: Text(
+                '${artisanFullGetDto.artisanName} - ${artisanFullGetDto.artisanshipName}',
+                style: AppTextStyles.heading20Bold,
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            Container(
+              width: 90.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Location:', style: AppTextStyles.heading20Bold),
+                  Text('${artisanFullGetDto.artisanAddress}',
+                      style: AppTextStyles.body16),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            Container(
+              width: 90.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Description:', style: AppTextStyles.heading20Bold),
+                  Html(data: '${artisanFullGetDto.artisanshipDescription}'),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            Container(
+              width: 90.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Member since:', style: AppTextStyles.heading20Bold),
+                  Text(
+                      HomeService().formatDate(
+                          "${artisanFullGetDto.artisanCreatedDate}"),
+                      style: AppTextStyles.body16),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            ExpandablePanel(
+              header: Text(
+                "Services offered & pricing",
+                style: AppTextStyles.heading20Bold,
+              ),
+              collapsed: Text(
+                "Tap to expand and see more details...",
+                softWrap: true,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              expanded: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Here is the expanded content. "
+                    "You can put any widget you want here.",
+                    softWrap: true,
+                  ),
+                  SizedBox(height: 10),
+                  Text("• Bullet point 1"),
+                  Text("• Bullet point 2"),
+                  Text("• Bullet point 3"),
+                ],
+              ),
+              theme: ExpandableThemeData(
+                iconColor: Colors.blue,
+                headerAlignment: ExpandablePanelHeaderAlignment.center,
+                tapBodyToExpand: true,
+                tapBodyToCollapse: true,
+                hasIcon: true,
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            ExpandablePanel(
+              header: Text(
+                "${artisanFullGetDto.artisanName}'s services & description",
+                style: AppTextStyles.heading20Bold,
+              ),
+              collapsed: Text(
+                "Tap to expand and see more details...",
+                softWrap: true,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              expanded: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Here is the expanded content. "
+                    "You can put any widget you want here.",
+                    softWrap: true,
+                  ),
+                  SizedBox(height: 10),
+                  Text("• Bullet point 1"),
+                  Text("• Bullet point 2"),
+                  Text("• Bullet point 3"),
+                ],
+              ),
+              theme: ExpandableThemeData(
+                iconColor: Colors.blue,
+                headerAlignment: ExpandablePanelHeaderAlignment.center,
+                tapBodyToExpand: true,
+                tapBodyToCollapse: true,
+                hasIcon: true,
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            ExpandablePanel(
+              header: Text(
+                "${artisanFullGetDto.artisanName}'s reviews & ratings",
+                style: AppTextStyles.heading20Bold,
+              ),
+              collapsed: Text(
+                "Tap to expand and see more details...",
+                softWrap: true,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              expanded: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Here is the expanded content. "
+                    "You can put any widget you want here.",
+                    softWrap: true,
+                  ),
+                  SizedBox(height: 10),
+                  Text("• Bullet point 1"),
+                  Text("• Bullet point 2"),
+                  Text("• Bullet point 3"),
+                ],
+              ),
+              theme: ExpandableThemeData(
+                iconColor: Colors.blue,
+                headerAlignment: ExpandablePanelHeaderAlignment.center,
+                tapBodyToExpand: true,
+                tapBodyToCollapse: true,
+                hasIcon: true,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // empty artisan widget
+  Widget _emptyArtisanWidget(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Illustration (replace with your own)
+            Icon(
+              Icons.no_accounts_outlined,
+              size: 30.sp,
+            ),
+
+            const SizedBox(height: 20),
+
+            Text(
+              'Artisan not found',
+              style: AppTextStyles.body18.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Text(
+              'Try selecting another artisan or adjusting your search location.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.body14.copyWith(
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () {
+                // Trigger refresh
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                    (route) => false);
+              },
+              icon: const Icon(Icons.home_outlined),
+              label: const Text(
+                'Go Back Home',
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: turquoise,
+                fixedSize: const Size(350, 50),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'John Doe - Mechanic',
-                          style: AppTextStyles.body16,
-                        ),
-                        Expanded(
-                          child: Placeholder(
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: const BorderSide(
+                    color: Colors.black,
+                    width: 1.0,
                   ),
                 ),
-              ],
+                elevation: 0,
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

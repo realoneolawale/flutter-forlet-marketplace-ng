@@ -10,16 +10,21 @@ import '../models/dtos/location_dto.dart';
 
 class HomeProvider extends ChangeNotifier {
   final HomeService _homeService = HomeService();
-
+  // provider variables
   HomeTypesListDto _homeList = HomeTypesListDto();
   List<ArtisanGetDto>? _artisansList;
   List<ArtisanshipGetDto>? _artisanshipList;
   List<StateGetDto>? _stateList;
   List<LgasGetDto>? _lgaList;
   LocationDto _location = LocationDto();
+  ArtisanFullGetDto _artisanFullGetDto = ArtisanFullGetDto(
+    artisanServices: List<ArtisanServiceDto>.empty(),
+    artisanRequests: List<ArtisanRequestDto>.empty(),
+    artisanImages: List<ArtisanImageDto>.empty(),
+  );
   bool _isLoading = false;
   String? _error;
-
+  // getters
   HomeTypesListDto get homeList => _homeList;
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -28,7 +33,8 @@ class HomeProvider extends ChangeNotifier {
   List<StateGetDto>? get stateList => _stateList;
   List<LgasGetDto>? get lgaList => _lgaList;
   LocationDto? get location => _location;
-
+  ArtisanFullGetDto get artisanFullGetDto => _artisanFullGetDto;
+  // setters
   void setStateLocation(StateGetDto state) {
     location?.stateId = state.id;
     location?.stateName = state.stateName;
@@ -132,5 +138,24 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
 
     return _lgaList;
+  }
+
+  Future<ArtisanFullGetDto> loadArtisanPreviewDetailsById(int artisanId) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _artisanFullGetDto =
+          await _homeService.getArtisanPreviewByArtisanId(artisanId);
+    } catch (e) {
+      _error = e.toString();
+      print(error);
+    }
+
+    _isLoading = false;
+    notifyListeners();
+
+    return _artisanFullGetDto;
   }
 }

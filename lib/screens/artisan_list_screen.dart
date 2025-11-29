@@ -177,7 +177,9 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
                         itemBuilder: (_, index) {
                           final e = artisans[index];
                           return GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              // get the artisan preview data & go to details screen
+                            },
                             child: Container(
                               padding: const EdgeInsets.all(4.0),
                               decoration: BoxDecoration(
