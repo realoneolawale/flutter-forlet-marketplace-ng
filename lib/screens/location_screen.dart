@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:forlet_marketplace_ng/constants/text_style.dart';
-import 'package:forlet_marketplace_ng/models/dtos/lgas_get_dto.dart';
-import 'package:forlet_marketplace_ng/models/dtos/states_get_dto.dart';
-import 'package:forlet_marketplace_ng/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/colors.dart';
 import '../constants/constant.dart';
+import '../constants/text_style.dart';
+import '../models/dtos/lgas_get_dto.dart';
+import '../models/dtos/states_get_dto.dart';
 import '../provider/home_provider.dart';
+import 'home_screen.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
@@ -34,6 +34,8 @@ class _LocationScreenState extends State<LocationScreen> {
     super.initState();
     Future.microtask(() =>
         Provider.of<HomeProvider>(context, listen: false).loadStateList());
+    Future.microtask(() => Provider.of<HomeProvider>(context, listen: false)
+        .loadPopularPlacesList());
   }
 
   @override
@@ -41,6 +43,7 @@ class _LocationScreenState extends State<LocationScreen> {
     final provider = Provider.of<HomeProvider>(context);
     final states = provider.stateList ?? [];
     final lgas = provider.lgaList ?? [];
+    final popularPlaces = provider.poupularPlacesList ?? [];
 
     return Scaffold(
       appBar: appBar,
@@ -49,7 +52,7 @@ class _LocationScreenState extends State<LocationScreen> {
         child: Container(
           padding: screenPadding,
           decoration: background,
-          child: Column(
+          child: ListView(
             children: [
               SizedBox(
                 height: 20.h,
@@ -168,6 +171,52 @@ class _LocationScreenState extends State<LocationScreen> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 2.h,
+              ),
+              Center(
+                child: Text(
+                  'Popular places',
+                  style: TextStyle(color: black, fontSize: 16),
+                ),
+              ),
+              SizedBox(
+                height: 2.h,
+              ),
+              SizedBox(
+                height: 60.h,
+                child: GridView.builder(
+                  itemCount: popularPlaces.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // <-- 2 items per row
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 3, // wider items
+                  ),
+                  itemBuilder: (context, index) {
+                    final place = popularPlaces[index];
+                    return Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: greyShade3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.location_city, color: black),
+                          SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              place.lgaName,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              )
             ],
           ),
         ),

@@ -1,11 +1,11 @@
+import 'package:ForLetMarketplaceNG/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:forlet_marketplace_ng/constants/colors.dart';
-import 'package:forlet_marketplace_ng/screens/forgot_password_screen.dart';
-import 'package:forlet_marketplace_ng/screens/register_screen.dart';
 import 'package:sizer/sizer.dart';
 
+import '../constants/colors.dart';
 import '../constants/constant.dart';
 import '../constants/text_style.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

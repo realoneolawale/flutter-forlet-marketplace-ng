@@ -1,10 +1,10 @@
+import 'package:ForLetMarketplaceNG/constants/text_style.dart';
 import 'package:flutter/material.dart';
-import 'package:forlet_marketplace_ng/constants/text_style.dart';
-import 'package:forlet_marketplace_ng/screens/home_screen.dart';
-import 'package:forlet_marketplace_ng/screens/location_screen.dart';
-import 'package:forlet_marketplace_ng/screens/login_screen.dart';
 import 'package:sizer/sizer.dart';
 
+import '../screens/home_screen.dart';
+import '../screens/location_screen.dart';
+import '../screens/login_screen.dart';
 import 'colors.dart';
 
 const String AppName = "ForLet Marketplace";

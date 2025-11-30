@@ -1,4 +1,4 @@
-import 'package:forlet_marketplace_ng/models/dtos/home_type_dto.dart';
+import 'home_type_dto.dart';
 
 class HomeTypesListDto {
   final List<HomeTypeDto>? artisanshipTypes;

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:forlet_marketplace_ng/constants/colors.dart';
-import 'package:forlet_marketplace_ng/constants/constant.dart';
-import 'package:forlet_marketplace_ng/constants/text_style.dart';
-import 'package:forlet_marketplace_ng/models/dtos/artisanships_get_dto.dart';
-import 'package:forlet_marketplace_ng/provider/home_provider.dart';
-import 'package:forlet_marketplace_ng/screens/artisan_list_screen.dart';
-import 'package:forlet_marketplace_ng/screens/location_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
+import '../constants/colors.dart';
+import '../constants/constant.dart';
+import '../constants/text_style.dart';
+import '../models/dtos/artisanships_get_dto.dart';
+import '../provider/home_provider.dart';
+import 'artisan_list_screen.dart';
+import 'location_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -162,10 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -191,6 +188,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               .copyWith(backgroundColor: mustard),
                         ),
                       ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       GridView.count(
                         crossAxisCount: 2,
                         childAspectRatio: 8,
@@ -205,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ArtisanshipGetDto artisanship =
                                       ArtisanshipGetDto(
                                           id: e.id, artisanshipName: e.name);
-                                  print("ID: ${e.id} NAME: ${e.name}");
+                                  //print("ID: ${e.id} NAME: ${e.name}");
 
                                   Navigator.push(
                                     context,
@@ -232,10 +232,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -261,6 +257,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               .copyWith(backgroundColor: mustard),
                         ),
                       ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       GridView.count(
                         crossAxisCount: 2,
                         childAspectRatio: 8,
@@ -285,10 +284,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -314,6 +309,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               .copyWith(backgroundColor: mustard),
                         ),
                       ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       GridView.count(
                         crossAxisCount: 2,
                         childAspectRatio: 8,
@@ -338,10 +336,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -367,6 +361,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               .copyWith(backgroundColor: mustard),
                         ),
                       ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       GridView.count(
                         crossAxisCount: 2,
                         childAspectRatio: 8,
@@ -391,10 +388,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -420,6 +413,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               .copyWith(backgroundColor: mustard),
                         ),
                       ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       GridView.count(
                         crossAxisCount: 2,
                         childAspectRatio: 8,
@@ -444,10 +440,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -472,6 +464,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: AppTextStyles.heading20
                               .copyWith(backgroundColor: mustard),
                         ),
+                      ),
+                      SizedBox(
+                        height: 1.h,
                       ),
                       GridView.count(
                         crossAxisCount: 2,
@@ -498,10 +493,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -527,6 +518,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               .copyWith(backgroundColor: mustard),
                         ),
                       ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       GridView.count(
                         crossAxisCount: 2,
                         childAspectRatio: 8,
@@ -551,10 +545,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -580,6 +570,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               .copyWith(backgroundColor: mustard),
                         ),
                       ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       GridView.count(
                         crossAxisCount: 2,
                         childAspectRatio: 8,
@@ -604,10 +597,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: black,
-                      width: 1,
-                    ),
                     color: transparent,
                     borderRadius: BorderRadius.horizontal(
                         left: Radius.circular(8.0),
@@ -632,6 +621,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: AppTextStyles.heading20
                               .copyWith(backgroundColor: mustard),
                         ),
+                      ),
+                      SizedBox(
+                        height: 1.h,
                       ),
                       GridView.count(
                         crossAxisCount: 2,

@@ -2,16 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:forlet_marketplace_ng/models/dtos/artisan_get_dto.dart';
-import 'package:forlet_marketplace_ng/models/dtos/artisanships_get_dto.dart';
-import 'package:forlet_marketplace_ng/models/dtos/home_types_list_dto.dart';
-import 'package:forlet_marketplace_ng/models/dtos/lgas_get_dto.dart';
-import 'package:forlet_marketplace_ng/models/dtos/login_response_dto.dart';
-import 'package:forlet_marketplace_ng/models/dtos/states_get_dto.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../models/dtos/artisan_get_dto.dart';
+import '../models/dtos/artisanships_get_dto.dart';
+import '../models/dtos/home_types_list_dto.dart';
+import '../models/dtos/lgas_get_dto.dart';
 import '../models/dtos/login_request_dto.dart';
+import '../models/dtos/login_response_dto.dart';
+import '../models/dtos/states_get_dto.dart';
 
 class HomeService {
   late String baseUrl;
@@ -84,6 +84,19 @@ class HomeService {
   Future<List<LgasGetDto>> getLgas(int stateId) async {
     final response = await http.get(
         Uri.parse("$baseUrl/api/home/get-lgas/$stateId"),
+        headers: headers);
+    //print(response.body);
+    if (response.statusCode != 200) {
+      throw Exception("Failed to load home list");
+    }
+    // create DTO from Map
+    List<dynamic> jsonList = jsonDecode(response.body) as List<dynamic>;
+    return jsonList.map((json) => LgasGetDto.fromJson(json)).toList();
+  }
+
+  Future<List<LgasGetDto>> getPopularPlaces() async {
+    final response = await http.get(
+        Uri.parse("$baseUrl/api/home/get-popular-places"),
         headers: headers);
     //print(response.body);
     if (response.statusCode != 200) {

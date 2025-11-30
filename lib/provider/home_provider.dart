@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:forlet_marketplace_ng/models/dtos/home_types_list_dto.dart';
-import 'package:forlet_marketplace_ng/models/dtos/lgas_get_dto.dart';
-import 'package:forlet_marketplace_ng/models/dtos/states_get_dto.dart';
-import 'package:forlet_marketplace_ng/services/home_service.dart';
 
 import '../models/dtos/artisan_get_dto.dart';
 import '../models/dtos/artisanships_get_dto.dart';
+import '../models/dtos/home_types_list_dto.dart';
+import '../models/dtos/lgas_get_dto.dart';
 import '../models/dtos/location_dto.dart';
+import '../models/dtos/states_get_dto.dart';
+import '../services/home_service.dart';
 
 class HomeProvider extends ChangeNotifier {
   final HomeService _homeService = HomeService();
@@ -16,6 +16,7 @@ class HomeProvider extends ChangeNotifier {
   List<ArtisanshipGetDto>? _artisanshipList;
   List<StateGetDto>? _stateList;
   List<LgasGetDto>? _lgaList;
+  List<LgasGetDto>? _poupularPlacesList;
   LocationDto _location = LocationDto();
   ArtisanFullGetDto _artisanFullGetDto = ArtisanFullGetDto(
     artisanServices: List<ArtisanServiceDto>.empty(),
@@ -32,6 +33,7 @@ class HomeProvider extends ChangeNotifier {
   List<ArtisanshipGetDto>? get artisanshipList => _artisanshipList;
   List<StateGetDto>? get stateList => _stateList;
   List<LgasGetDto>? get lgaList => _lgaList;
+  List<LgasGetDto>? get poupularPlacesList => _poupularPlacesList;
   LocationDto? get location => _location;
   ArtisanFullGetDto get artisanFullGetDto => _artisanFullGetDto;
   // setters
@@ -138,6 +140,24 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
 
     return _lgaList;
+  }
+
+  Future<List<LgasGetDto>?> loadPopularPlacesList() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _poupularPlacesList = await _homeService.getPopularPlaces();
+    } catch (e) {
+      _error = e.toString();
+      print(error);
+    }
+
+    _isLoading = false;
+    notifyListeners();
+
+    return _poupularPlacesList;
   }
 
   Future<ArtisanFullGetDto> loadArtisanPreviewDetailsById(int artisanId) async {

@@ -1,14 +1,15 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:forlet_marketplace_ng/models/dtos/artisan_get_dto.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/colors.dart';
 import '../constants/constant.dart';
 import '../constants/text_style.dart';
+import '../models/dtos/artisan_get_dto.dart';
 import '../models/dtos/artisanships_get_dto.dart';
 import '../provider/home_provider.dart';
+import 'artisan_detail_screen.dart';
 
 class ArtisanListScreen extends StatefulWidget {
   ArtisanshipGetDto artisanship;
@@ -154,7 +155,9 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
                         width: 1.w,
                       ),
                       Text(
-                        '${widget.artisanship.artisanshipName} in Location',
+                        '${widget.artisanship.artisanshipName} in '
+                        "${provider.location?.stateName ?? 'All locations'}"
+                        "${provider.location?.lgaName != null ? ' >> ${provider.location!.lgaName}' : ''}",
                         style: AppTextStyles.body16,
                       ),
                     ],
@@ -179,6 +182,11 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
                           return GestureDetector(
                             onTap: () {
                               // get the artisan preview data & go to details screen
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ArtisanDetailScreen(
+                                          artisanId: e.artisanId ?? 0)));
                             },
                             child: Container(
                               padding: const EdgeInsets.all(4.0),

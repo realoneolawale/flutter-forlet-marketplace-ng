@@ -1,16 +1,16 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:forlet_marketplace_ng/models/dtos/artisan_get_dto.dart';
-import 'package:forlet_marketplace_ng/screens/home_screen.dart';
-import 'package:forlet_marketplace_ng/services/home_service.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/colors.dart';
 import '../constants/constant.dart';
 import '../constants/text_style.dart';
+import '../models/dtos/artisan_get_dto.dart';
 import '../provider/home_provider.dart';
+import '../services/home_service.dart';
+import 'home_screen.dart';
 
 class ArtisanDetailScreen extends StatefulWidget {
   final int artisanId;
@@ -161,15 +161,21 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
               expanded: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Here is the expanded content. "
-                    "You can put any widget you want here.",
-                    softWrap: true,
-                  ),
                   SizedBox(height: 10),
-                  Text("• Bullet point 1"),
-                  Text("• Bullet point 2"),
-                  Text("• Bullet point 3"),
+                  if (artisanFullGetDto.artisanServices != null &&
+                      artisanFullGetDto.artisanServices!.isNotEmpty)
+                    ...artisanFullGetDto.artisanServices!.map(
+                      (e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(e.services.toString(), softWrap: true),
+                          Text("From ₦${e.price.toStringAsFixed(2)}"),
+                          SizedBox(height: 8),
+                        ],
+                      ),
+                    )
+                  else
+                    Text("No service found"),
                 ],
               ),
               theme: ExpandableThemeData(
@@ -197,15 +203,40 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
               expanded: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Here is the expanded content. "
-                    "You can put any widget you want here.",
-                    softWrap: true,
-                  ),
                   SizedBox(height: 10),
-                  Text("• Bullet point 1"),
-                  Text("• Bullet point 2"),
-                  Text("• Bullet point 3"),
+                  if (artisanFullGetDto.artisanImages != null &&
+                      artisanFullGetDto.artisanImages!.isNotEmpty)
+                    ...artisanFullGetDto.artisanImages!.map(
+                      (e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Image widget instead of Container with ImageProvider
+                          Container(
+                            child: e.artisanImageUrl != null
+                                ? Image.network(
+                                    e.artisanImageUrl!,
+                                    height: 150, // optional: set a size
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset(
+                                    'assets/images/splash_screen/noimage.jpg',
+                                    height: 150,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            e.artisanImageName.toString(),
+                            softWrap: true,
+                          ),
+                          SizedBox(height: 8),
+                        ],
+                      ),
+                    )
+                  else
+                    Text("No service found"),
                 ],
               ),
               theme: ExpandableThemeData(
