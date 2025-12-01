@@ -6,8 +6,8 @@ class LocationDto {
 
   LocationDto({
     this.stateId = 0,
-    this.stateName = null,
+    this.stateName,
     this.lgaId = 0,
-    this.lgaName = null,
+    this.lgaName,
   });
 }

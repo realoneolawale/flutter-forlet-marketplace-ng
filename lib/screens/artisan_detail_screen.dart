@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:signalr_core/signalr_core.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/colors.dart';
@@ -22,12 +27,59 @@ class ArtisanDetailScreen extends StatefulWidget {
 }
 
 class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
+  // 1. create signal r
+  late HubConnection hubConnection;
+  final picker = ImagePicker();
+  List<Map<String, dynamic>> messages = [];
+
   @override
   void initState() {
     super.initState();
     // class the provide to get artisan preview details
     Future.microtask(() => Provider.of<HomeProvider>(context, listen: false)
         .loadArtisanPreviewDetailsById(widget.artisanId ?? 1));
+    // 2. intialise the signalr
+    initSignalR();
+  }
+
+  Future<void> initSignalR() async {
+    hubConnection = HubConnectionBuilder()
+        .withUrl(
+          'https://forlet.com.ng/artisanchathub',
+        )
+        .withAutomaticReconnect()
+        .build();
+
+    hubConnection.on("ReceiveMessage", (data) {
+      final msg = {
+        "receiverId": data?[0],
+        "message": data?[1],
+        "image": data?[2],
+        "date": data?[3],
+      };
+      setState(() => messages.add(msg));
+    });
+
+    await hubConnection.start();
+    print("Connected!");
+  }
+
+  // send message
+  Future<void> sendMessage(String receiverUserId, String message) async {
+    await hubConnection
+        .invoke("SendMessageWithFile", args: [receiverUserId, message, ""]);
+  }
+
+  // send image
+  Future<void> sendImageMessage(String receiverUserId, String message) async {
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked == null) return;
+
+    final bytes = await picked.readAsBytes();
+    final base64String = "data:image/png;base64,${base64Encode(bytes)}";
+
+    await hubConnection.invoke("SendMessageWithFile",
+        args: [receiverUserId, message, base64String]);
   }
 
   @override
@@ -70,7 +122,6 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
 
     return SafeArea(
       child: Container(
-        height: MediaQuery.of(context).size.height, // Force full screen
         padding: screenPadding,
         decoration: background,
         child: ListView(
@@ -79,15 +130,21 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
               height: 2.h,
             ),
             Center(
-              child: CircleAvatar(
-                radius: 90.0,
-                backgroundColor: mustard,
-                backgroundImage: artisanFullGetDto.artisanAvatar != null
-                    ? NetworkImage(artisanFullGetDto.artisanAvatar!)
-                    : const AssetImage(
-                            'assets/images/splash_screen/noimage.jpg')
-                        as ImageProvider,
-              ),
+              child: artisanFullGetDto.artisanAvatar != null
+                  ? Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Image.network(
+                        artisanFullGetDto.artisanAvatar!,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Image.asset(
+                      'assets/images/splash_screen/noimage.jpg',
+                      height: 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
             ),
             SizedBox(
               height: 2.h,
@@ -101,7 +158,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
             SizedBox(
               height: 2.h,
             ),
-            Container(
+            SizedBox(
               width: 90.w,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +173,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
             SizedBox(
               height: 2.h,
             ),
-            Container(
+            SizedBox(
               width: 90.w,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +187,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
             SizedBox(
               height: 2.h,
             ),
-            Container(
+            SizedBox(
               width: 90.w,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +195,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
                 children: [
                   Text('Member since:', style: AppTextStyles.heading20Bold),
                   Text(
-                      HomeService().formatDate(
+                      HomeService.formatDate(
                           "${artisanFullGetDto.artisanCreatedDate}"),
                       style: AppTextStyles.body16),
                 ],
@@ -162,9 +219,8 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 10),
-                  if (artisanFullGetDto.artisanServices != null &&
-                      artisanFullGetDto.artisanServices!.isNotEmpty)
-                    ...artisanFullGetDto.artisanServices!.map(
+                  if (artisanFullGetDto.artisanServices.isNotEmpty)
+                    ...artisanFullGetDto.artisanServices.map(
                       (e) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -204,9 +260,8 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 10),
-                  if (artisanFullGetDto.artisanImages != null &&
-                      artisanFullGetDto.artisanImages!.isNotEmpty)
-                    ...artisanFullGetDto.artisanImages!.map(
+                  if (artisanFullGetDto.artisanImages.isNotEmpty)
+                    ...artisanFullGetDto.artisanImages.map(
                       (e) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -282,6 +337,54 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
                 tapBodyToCollapse: true,
                 hasIcon: true,
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  // GO TO COMPLETE DETAILS SCREEN AND CHAT USING SIGNALR
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: turquoise,
+                  //minimumSize: const Size(double.infinity, 50),
+                  fixedSize: const Size(350, 50),
+                ),
+                child: const Text(
+                  'View Contact Details & Chat 💬',
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            // Chat Section
+            ListView(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              children: messages.isNotEmpty
+                  ? messages.map((msg) {
+                      Uint8List? imgBytes;
+                      if (msg["image"] != null && msg["image"] != "") {
+                        imgBytes = base64Decode(msg["image"].split(',').last)
+                            as Uint8List?;
+                      }
+                      return ListTile(
+                        title: Text(msg["message"]),
+                        subtitle: Text(msg["date"]),
+                        trailing: imgBytes != null
+                            ? Image.memory(imgBytes, width: 100)
+                            : null,
+                      );
+                    }).toList()
+                  : [
+                      Center(
+                        child: Text(
+                          '💬...',
+                          style: AppTextStyles.body14,
+                        ),
+                      ),
+                    ],
             ),
           ],
         ),

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -17,18 +16,23 @@ class HomeService {
   late String baseUrl;
   final headers = {'X-Country': 'NG'};
   final storage = const FlutterSecureStorage();
+  // forces on instance of http that closes after every connection to avoid socket exhaustion
+  static final http.Client client = http.Client();
 
   HomeService() {
-    if (Platform.isAndroid) {
-      baseUrl = "http://10.0.2.2:5000";
-    } else if (Platform.isIOS) {
-      baseUrl = "http://127.0.0.1:5000";
-    }
+    // test on emulators
+    // if (Platform.isAndroid) {
+    //   baseUrl = "http://10.0.2.2:5000";
+    // } else if (Platform.isIOS) {
+    //   baseUrl = "http://127.0.0.1:5000";
+    // }
+    // testing on physical device
+    baseUrl = "http://192.168.0.175:5000";
   }
 
   // get home list
   Future<HomeTypesListDto> getHomeList() async {
-    final response = await http.get(Uri.parse("$baseUrl/api/home/get-home"),
+    final response = await client.get(Uri.parse("$baseUrl/api/home/get-home"),
         headers: headers);
     //print(response.body);
     if (response.statusCode != 200) {
@@ -40,7 +44,7 @@ class HomeService {
   // get artisans by artisanship id
   Future<List<ArtisanGetDto>> getArtisansByArtisanshipId(
       int artisanshipId) async {
-    final response = await http.get(
+    final response = await client.get(
         Uri.parse(
             "$baseUrl/api/home/get-artisans-by-artisanship-id/$artisanshipId"),
         headers: headers);
@@ -55,7 +59,7 @@ class HomeService {
 
   // get artisanship types
   Future<List<ArtisanshipGetDto>> getArtisanshipTypes() async {
-    final response = await http.get(
+    final response = await client.get(
         Uri.parse("$baseUrl/api/home/get-artisanship-types"),
         headers: headers);
     //print(response.body);
@@ -69,7 +73,7 @@ class HomeService {
 
   // get states
   Future<List<StateGetDto>> getStates() async {
-    final response = await http.get(Uri.parse("$baseUrl/api/home/get-states"),
+    final response = await client.get(Uri.parse("$baseUrl/api/home/get-states"),
         headers: headers);
     //print(response.body);
     if (response.statusCode != 200) {
@@ -82,7 +86,7 @@ class HomeService {
 
   // get getlgas
   Future<List<LgasGetDto>> getLgas(int stateId) async {
-    final response = await http.get(
+    final response = await client.get(
         Uri.parse("$baseUrl/api/home/get-lgas/$stateId"),
         headers: headers);
     //print(response.body);
@@ -95,7 +99,7 @@ class HomeService {
   }
 
   Future<List<LgasGetDto>> getPopularPlaces() async {
-    final response = await http.get(
+    final response = await client.get(
         Uri.parse("$baseUrl/api/home/get-popular-places"),
         headers: headers);
     //print(response.body);
@@ -118,7 +122,7 @@ class HomeService {
       'refreshToken': refresh,
     });
 
-    final response = await http.post(Uri.parse("$baseUrl/api/auth/refresh"),
+    final response = await client.post(Uri.parse("$baseUrl/api/auth/refresh"),
         headers: headers, body: refreshTokenRequestBody);
     LoginResponseDto result =
         LoginResponseDto.fromJson(json.decode(response.body));
@@ -134,7 +138,7 @@ class HomeService {
       'password': dto.password,
     });
 
-    final response = await http.post(Uri.parse("$baseUrl/api/auth/login"),
+    final response = await client.post(Uri.parse("$baseUrl/api/auth/login"),
         headers: headers, body: body);
 
     if (response.statusCode == 200) {
@@ -154,7 +158,7 @@ class HomeService {
   }
 
   Future<ArtisanFullGetDto> getArtisanPreviewByArtisanId(int artisanId) async {
-    final response = await http.get(
+    final response = await client.get(
         Uri.parse("$baseUrl/api/home/get-artisan-preview-by-id/$artisanId"),
         headers: headers);
     //print("RESPONSE: ${response.body}");
@@ -164,8 +168,8 @@ class HomeService {
     return ArtisanFullGetDto.fromJson(json.decode(response.body));
   }
 
-  String formatDate(String rawDate) {
+  static String formatDate(String rawDate) {
     final date = DateTime.parse(rawDate);
-    return DateFormat('EEEE, MMMM yyyy').format(date);
+    return DateFormat('MMMM yyyy').format(date);
   }
 }

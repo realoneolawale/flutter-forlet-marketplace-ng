@@ -1,6 +1,6 @@
 import 'package:ForLetMarketplaceNG/provider/account_provider.dart';
 import 'package:ForLetMarketplaceNG/provider/home_provider.dart';
-import 'package:ForLetMarketplaceNG/screens/home_screen.dart';
+import 'package:ForLetMarketplaceNG/screens/artisan_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: AppName,
           theme: ThemeData(),
-          home: HomeScreen(),
+          home: ArtisanDetailScreen(artisanId: 17),
         ),
       );
     });

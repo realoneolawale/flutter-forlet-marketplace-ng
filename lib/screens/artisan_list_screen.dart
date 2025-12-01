@@ -200,15 +200,19 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Center(
-                                    child: CircleAvatar(
-                                      radius: 50.0,
-                                      backgroundColor: mustard,
-                                      backgroundImage: e.artisanImage != null
-                                          ? NetworkImage(e.artisanImage!)
-                                          : const AssetImage(
-                                                  'assets/images/splash_screen/noimage.jpg')
-                                              as ImageProvider,
-                                    ),
+                                    child: e.artisanImage != null
+                                        ? Image.network(
+                                            e.artisanImage!,
+                                            height: 150, // optional: set a size
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(
+                                            'assets/images/splash_screen/noimage.jpg',
+                                            height: 150,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                          ),
                                   ),
                                   Text(e.artisanName ?? 'Unknown',
                                       style: AppTextStyles.body18),

@@ -17,7 +17,7 @@ class HomeProvider extends ChangeNotifier {
   List<StateGetDto>? _stateList;
   List<LgasGetDto>? _lgaList;
   List<LgasGetDto>? _poupularPlacesList;
-  LocationDto _location = LocationDto();
+  final LocationDto _location = LocationDto();
   ArtisanFullGetDto _artisanFullGetDto = ArtisanFullGetDto(
     artisanServices: List<ArtisanServiceDto>.empty(),
     artisanRequests: List<ArtisanRequestDto>.empty(),
