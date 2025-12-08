@@ -1,4 +1,6 @@
+import 'package:ForLetMarketplaceNG/models/dtos/register_request_dto.dart';
 import 'package:ForLetMarketplaceNG/provider/form_validator_provider.dart';
+import 'package:ForLetMarketplaceNG/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -21,6 +23,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // screen variables
   StateGetDto? selectedState;
   LgasGetDto? selectedLga;
+  RegisterRequestDto dto = RegisterRequestDto();
+  dynamic result;
 
   @override
   void initState() {
@@ -37,11 +41,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final states = provider.stateList ?? [];
     final lgas = provider.lgaList ?? [];
 
-    return Scaffold(
-      appBar: appBar,
-      drawer: appDrawer(context),
-      body: SafeArea(
-        child: SingleChildScrollView(
+    TextEditingController firstNameController = TextEditingController();
+    TextEditingController lastNameController = TextEditingController();
+    TextEditingController houseNumberController = TextEditingController();
+    TextEditingController streetNameController = TextEditingController();
+    TextEditingController areaNameController = TextEditingController();
+    TextEditingController stateIdController = TextEditingController();
+    TextEditingController lgaIdController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController phoneController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+    TextEditingController confirmPasswordController = TextEditingController();
+
+    return SafeArea(
+      child: Scaffold(
+        appBar: appBar,
+        drawer: appDrawer(context),
+        body: SingleChildScrollView(
           child: Container(
             padding: screenPadding,
             decoration: background,
@@ -74,12 +90,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validateFirstName;
-                  },
+                  onChanged: validationProvider.validateFirstName,
+                  controller: firstNameController,
                   decoration: InputDecoration(
                     labelText: "Your first name",
                     errorText: validationProvider.firstNameError,
+                    errorStyle: errorTextStyle,
                     hintText: 'First Name',
                     prefixIcon: Icon(Icons.info),
                     border: border,
@@ -91,12 +107,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validateLastName;
-                  },
+                  onChanged: validationProvider.validateLastName,
+                  controller: lastNameController,
                   decoration: InputDecoration(
                     labelText: "Your last name",
                     errorText: validationProvider.lastNameError,
+                    errorStyle: errorTextStyle,
                     hintText: 'Last Name',
                     prefixIcon: Icon(Icons.info),
                     border: border,
@@ -115,11 +131,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 10),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color.fromRGBO(225, 225, 225, 1)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
                   child: DropdownButtonFormField<String>(
                     value: 'Male',
                     isExpanded: true,
@@ -133,7 +144,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ]
                         .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                         .toList(),
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      dto.gender = value;
+                    },
+                    decoration: InputDecoration(
+                      enabledBorder: border,
+                      prefixIcon: Icon(Icons.person),
+                      labelText: "Your gender",
+                      errorText: validationProvider.genderError,
+                      errorStyle: errorTextStyle,
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -147,13 +168,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validateHouseNumber;
-                  },
+                  controller: houseNumberController,
+                  onChanged: validationProvider.validateHouseNumber,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Your house number',
                     errorText: validationProvider.houseNumberError,
+                    errorStyle: errorTextStyle,
                     hintText: 'House Number (e.g. 3)',
                     prefixIcon: Icon(Icons.info),
                     border: border,
@@ -165,13 +186,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validateStreetName;
-                  },
+                  controller: streetNameController,
+                  onChanged: validationProvider.validateStreetName,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     labelText: 'Your street name',
                     errorText: validationProvider.streetNameError,
+                    errorStyle: errorTextStyle,
                     hintText: 'Street Name (e.g. Bode Thomas Street)',
                     prefixIcon: Icon(Icons.info),
                     border: border,
@@ -183,13 +204,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validateAreaName;
-                  },
+                  controller: areaNameController,
+                  onChanged: validationProvider.validateAreaName,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     labelText: 'Your area name',
                     errorText: validationProvider.areaNameError,
+                    errorStyle: errorTextStyle,
                     hintText: 'Area Name (e.g. Aguda Surulere)',
                     prefixIcon: Icon(Icons.info),
                     border: border,
@@ -201,11 +222,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color.fromRGBO(225, 225, 225, 1)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
                   child: DropdownButtonFormField<StateGetDto>(
                     value: selectedState,
                     isExpanded: true,
@@ -223,14 +239,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         )
                         .toList(),
                     decoration: InputDecoration(
+                      enabledBorder: border,
+                      prefixIcon: Icon(Icons.location_on_outlined),
                       labelText: "Your state of residence",
                       errorText: validationProvider.stateIdError,
+                      errorStyle: errorTextStyle,
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
-                      validationProvider.validateStateId;
                       setState(() {
+                        validationProvider.validateStateId;
                         selectedState = value;
+                        dto.stateId = value?.id ?? 1;
                         Provider.of<HomeProvider>(context, listen: false)
                             .loadLgaList(value?.id ?? 1);
                         // update the provider state name and id value
@@ -243,11 +263,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color.fromRGBO(225, 225, 225, 1)),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
                   child: DropdownButtonFormField<LgasGetDto>(
                     value: selectedLga,
                     isExpanded: true,
@@ -265,14 +280,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         )
                         .toList(),
                     decoration: InputDecoration(
+                      enabledBorder: border,
+                      prefixIcon: Icon(Icons.location_on_outlined),
                       labelText: "Your L.G.A of residence",
                       errorText: validationProvider.lgaIdError,
+                      errorStyle: errorTextStyle,
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
                       validationProvider.validateLgaId;
                       setState(() {
                         selectedLga = value;
+                        dto.lgaId = value?.id ?? 1;
                         // update the provider lga name value
                         provider.setLgaLocation(selectedLga!);
                       });
@@ -290,13 +309,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validateEmail;
-                  },
+                  controller: emailController,
+                  onChanged: validationProvider.validateEmail,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Your email address',
                     errorText: validationProvider.emailError,
+                    errorStyle: errorTextStyle,
                     hintText: 'Email',
                     prefixIcon: Icon(Icons.email_outlined),
                     border: border,
@@ -308,13 +327,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validatePhone;
-                  },
+                  controller: phoneController,
+                  onChanged: validationProvider.validatePhone,
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     labelText: 'Your phone number',
                     errorText: validationProvider.phoneNumberError,
+                    errorStyle: errorTextStyle,
                     hintText: 'Phone Number',
                     prefixIcon: Icon(Icons.phone_outlined),
                     border: border,
@@ -326,13 +345,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 2.h,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validatePassword;
-                  },
+                  controller: passwordController,
+                  onChanged: validationProvider.validatePassword,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Your password',
                     errorText: validationProvider.passwordError,
+                    errorStyle: errorTextStyle,
                     hintText: 'Password',
                     prefixIcon: Icon(Icons.password),
                     border: border,
@@ -344,13 +363,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 8.0,
                 ),
                 TextField(
-                  onChanged: (value) {
-                    validationProvider.validateConfirmPassword;
-                  },
+                  controller: confirmPasswordController,
+                  onChanged: validationProvider.validateConfirmPassword,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'Your password confirmation',
                     errorText: validationProvider.confirmPasswordError,
+                    errorStyle: errorTextStyle,
                     hintText: 'Confirm Password',
                     prefixIcon: Icon(Icons.password),
                     border: border,
@@ -364,7 +383,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Padding(
                   padding: EdgeInsets.all(20.0),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      result = provider.registerUser(dto);
+
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Success'),
+                          content: Text(result),
+                          actions: [
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () => Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                  (route) => false),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: turquoise,
                       fixedSize: const Size(350, 50),
@@ -374,6 +413,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       style: TextStyle(color: Colors.black, fontSize: 16),
                     ),
                   ),
+                ),
+                SizedBox(
+                  height: 2.h,
                 ),
               ],
             ),

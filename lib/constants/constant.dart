@@ -13,12 +13,12 @@ const String AppName = "ForLet Marketplace";
 
 // textbox outlineInputeBorder style
 const border = OutlineInputBorder(
-  borderSide: BorderSide(color: Color.fromRGBO(225, 225, 225, 1)),
+  borderSide: BorderSide(color: Colors.black),
   borderRadius: BorderRadius.horizontal(
       left: Radius.circular(25.0), right: Radius.circular(25.0)),
 );
 
-TextStyle errorTextStyle = AppTextStyles.small10.copyWith(color: red);
+TextStyle errorTextStyle = AppTextStyles.small12.copyWith(color: red);
 
 // app-wide box decoration
 Decoration background = BoxDecoration(

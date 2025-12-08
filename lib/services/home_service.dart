@@ -11,6 +11,7 @@ import '../models/dtos/home_types_list_dto.dart';
 import '../models/dtos/lgas_get_dto.dart';
 import '../models/dtos/login_request_dto.dart';
 import '../models/dtos/login_response_dto.dart';
+import '../models/dtos/register_request_dto.dart';
 import '../models/dtos/states_get_dto.dart';
 
 class HomeService {
@@ -163,13 +164,32 @@ class HomeService {
       return result;
     }
     // create DTO from Map
-    print("LOGIN ERROR");
     return null;
   }
 
   Future<void> saveLoginTokens(String accessToken, String refreshToken) async {
     await storage.write(key: 'accessToken', value: accessToken);
     await storage.write(key: 'refreshToken', value: refreshToken);
+  }
+
+  // register user
+  Future<dynamic> registerUser(RegisterRequestDto dto) async {
+    final body = dto.toJson();
+
+    final registerHeaders = {
+      'X-Country': 'NG',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final response = await client.post(Uri.parse("$baseUrl/api/auth/register"),
+        headers: registerHeaders, body: body);
+
+    if (response.statusCode == 200) {
+      String result = json.decode(response.body);
+      return result;
+    }
+    return null;
   }
 
   Future<ArtisanFullGetDto> getArtisanPreviewByArtisanId(int artisanId) async {

@@ -13,6 +13,7 @@ class FormValidatorProvider extends ChangeNotifier {
   String? lgaIdError;
   String? passwordError;
   String? confirmPasswordError;
+  String? confirmPasswordCheck;
 
   void validateFirstName(String value) {
     if (value.isEmpty) {
@@ -105,6 +106,7 @@ class FormValidatorProvider extends ChangeNotifier {
     } else if (value.length < 6) {
       passwordError = "Password requires minimum of 6 characters";
     } else {
+      confirmPasswordCheck = value;
       passwordError = null;
     }
     notifyListeners();
@@ -115,6 +117,8 @@ class FormValidatorProvider extends ChangeNotifier {
       confirmPasswordError = "Confirm password can't be empty";
     } else if (value.length < 6) {
       confirmPasswordError = "Password requires minimum of 6 characters";
+    } else if (value != confirmPasswordCheck) {
+      confirmPasswordError = "Password does not match";
     } else {
       confirmPasswordError = null;
     }

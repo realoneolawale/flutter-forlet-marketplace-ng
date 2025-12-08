@@ -1,4 +1,5 @@
 import 'package:ForLetMarketplaceNG/models/dtos/login_request_dto.dart';
+import 'package:ForLetMarketplaceNG/models/dtos/register_request_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -216,5 +217,27 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
 
     return _loginResponseDto;
+  }
+
+  Future<dynamic> registerUser(RegisterRequestDto dto) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    String? result;
+
+    try {
+      result = await _homeService.registerUser(dto);
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return null;
+    }
+
+    _isLoading = false;
+    notifyListeners();
+
+    return result;
   }
 }
