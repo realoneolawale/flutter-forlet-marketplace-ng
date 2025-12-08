@@ -4,9 +4,13 @@ import 'dart:typed_data';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:signalr_core/signalr_core.dart';
+import 'package:signalr_netcore_plus/http_connection_options.dart';
+import 'package:signalr_netcore_plus/hub_connection.dart';
+import 'package:signalr_netcore_plus/hub_connection_builder.dart';
+import 'package:signalr_netcore_plus/itransport.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/colors.dart';
@@ -14,7 +18,6 @@ import '../constants/constant.dart';
 import '../constants/text_style.dart';
 import '../models/dtos/artisan_get_dto.dart';
 import '../provider/home_provider.dart';
-import '../services/home_service.dart';
 import 'home_screen.dart';
 
 class ArtisanDetailScreen extends StatefulWidget {
@@ -27,7 +30,9 @@ class ArtisanDetailScreen extends StatefulWidget {
 }
 
 class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
-  // 1. create signal r
+  // screen variables
+  final storage = const FlutterSecureStorage();
+  // 1. create signalr
   late HubConnection hubConnection;
   final picker = ImagePicker();
   List<Map<String, dynamic>> messages = [];
@@ -38,7 +43,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
     // class the provide to get artisan preview details
     Future.microtask(() => Provider.of<HomeProvider>(context, listen: false)
         .loadArtisanPreviewDetailsById(widget.artisanId ?? 1));
-    // 2. intialise the signalr
+    // 2. intialize the signalr
     initSignalR();
   }
 
@@ -46,7 +51,14 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
     hubConnection = HubConnectionBuilder()
         .withUrl(
           'https://forlet.com.ng/artisanchathub',
+          options: HttpConnectionOptions(
+              transport: HttpTransportType.LongPolling,
+              accessTokenFactory: () async =>
+                  await storage.read(key: 'accessToken') ?? ""),
         )
+        // .configureLogging((level, message) {
+        //   print("SignalR log: $level: $message");
+        // })
         .withAutomaticReconnect()
         .build();
 
@@ -57,11 +69,12 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
         "image": data?[2],
         "date": data?[3],
       };
+      print('MEESAGE: $msg');
       setState(() => messages.add(msg));
     });
 
     await hubConnection.start();
-    print("Connected!");
+    print("Connection started. State: ${hubConnection.state}");
   }
 
   // send message
@@ -91,7 +104,9 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
 
     return Scaffold(
       appBar: appBar,
-      drawer: appDrawer(context),
+      drawer: provider.loginResponseDto == null
+          ? appDrawer(context)
+          : loginAppDrawer(context),
       body: _buildBody(provider, artisanFullGetDto),
     );
   }
@@ -131,8 +146,8 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
             ),
             Center(
               child: artisanFullGetDto.artisanAvatar != null
-                  ? Padding(
-                      padding: EdgeInsets.all(16.0),
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
                       child: Image.network(
                         artisanFullGetDto.artisanAvatar!,
                         width: double.infinity,
@@ -140,7 +155,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
                       ),
                     )
                   : Image.asset(
-                      'assets/images/splash_screen/noimage.jpg',
+                      'assets/images/splash_screen/noimage.png',
                       height: 150,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -194,9 +209,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('Member since:', style: AppTextStyles.heading20Bold),
-                  Text(
-                      HomeService.formatDate(
-                          "${artisanFullGetDto.artisanCreatedDate}"),
+                  Text("${artisanFullGetDto.artisanCreatedDate}",
                       style: AppTextStyles.body16),
                 ],
               ),
@@ -275,7 +288,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
                                     fit: BoxFit.cover,
                                   )
                                 : Image.asset(
-                                    'assets/images/splash_screen/noimage.jpg',
+                                    'assets/images/splash_screen/noimage.png',
                                     height: 150,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
@@ -380,7 +393,7 @@ class _ArtisanDetailScreenState extends State<ArtisanDetailScreen> {
                   : [
                       Center(
                         child: Text(
-                          '💬...',
+                          'No messages 💬...',
                           style: AppTextStyles.body14,
                         ),
                       ),

@@ -43,7 +43,9 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
 
     return Scaffold(
       appBar: appBar,
-      drawer: appDrawer(context),
+      drawer: provider.loginResponseDto == null
+          ? appDrawer(context)
+          : loginAppDrawer(context),
       body: _buildBody(provider, artisanships, artisans),
     );
   }
@@ -170,7 +172,7 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 1.0, // width / height ratio
+                          childAspectRatio: 0.6, // width / height ratio
                           mainAxisSpacing: 8,
                           crossAxisSpacing: 8,
                         ),
@@ -201,15 +203,20 @@ class _ArtisanListScreenState extends State<ArtisanListScreen> {
                                 children: [
                                   Center(
                                     child: e.artisanImage != null
-                                        ? Image.network(
-                                            e.artisanImage!,
-                                            height: 150, // optional: set a size
-                                            width: double.infinity,
-                                            fit: BoxFit.cover,
+                                        ? ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                            child: Image.network(
+                                              e.artisanImage!,
+                                              height:
+                                                  220, // optional: set a size
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
+                                            ),
                                           )
                                         : Image.asset(
                                             'assets/images/splash_screen/noimage.jpg',
-                                            height: 150,
+                                            height: 220,
                                             width: double.infinity,
                                             fit: BoxFit.cover,
                                           ),

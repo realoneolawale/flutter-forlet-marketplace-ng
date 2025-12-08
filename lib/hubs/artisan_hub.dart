@@ -1,4 +1,5 @@
-import 'package:signalr_core/signalr_core.dart';
+import 'package:signalr_netcore_plus/hub_connection.dart';
+import 'package:signalr_netcore_plus/hub_connection_builder.dart';
 
 class ArtisanHub {
   final hubConnection = HubConnectionBuilder()

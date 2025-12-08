@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -21,13 +22,13 @@ class HomeService {
 
   HomeService() {
     // test on emulators
-    // if (Platform.isAndroid) {
-    //   baseUrl = "http://10.0.2.2:5000";
-    // } else if (Platform.isIOS) {
-    //   baseUrl = "http://127.0.0.1:5000";
-    // }
+    if (Platform.isAndroid) {
+      baseUrl = "http://10.0.2.2:5000";
+    } else if (Platform.isIOS) {
+      baseUrl = "http://127.0.0.1:5000";
+    }
     // testing on physical device
-    baseUrl = "http://192.168.0.175:5000";
+    //baseUrl = "http://192.168.0.175:5000";
   }
 
   // get home list
@@ -122,8 +123,14 @@ class HomeService {
       'refreshToken': refresh,
     });
 
+    final refreshHeaders = {
+      'X-Country': 'NG',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
     final response = await client.post(Uri.parse("$baseUrl/api/auth/refresh"),
-        headers: headers, body: refreshTokenRequestBody);
+        headers: refreshHeaders, body: refreshTokenRequestBody);
     LoginResponseDto result =
         LoginResponseDto.fromJson(json.decode(response.body));
     // save the token in secure storage
@@ -138,17 +145,25 @@ class HomeService {
       'password': dto.password,
     });
 
+    final loginHeaders = {
+      'X-Country': 'NG',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
     final response = await client.post(Uri.parse("$baseUrl/api/auth/login"),
-        headers: headers, body: body);
+        headers: loginHeaders, body: body);
 
     if (response.statusCode == 200) {
       LoginResponseDto result =
           LoginResponseDto.fromJson(json.decode(response.body));
+      print("LOGIN SUCCESSFUL: $result");
       // store tokens in secureStorage
       await saveLoginTokens(result.token, result.refreshToken);
       return result;
     }
     // create DTO from Map
+    print("LOGIN ERROR");
     return null;
   }
 
@@ -165,7 +180,10 @@ class HomeService {
     if (response.statusCode != 200) {
       throw Exception("Failed to artisan details");
     }
-    return ArtisanFullGetDto.fromJson(json.decode(response.body));
+    ArtisanFullGetDto artisan =
+        ArtisanFullGetDto.fromJson(json.decode(response.body));
+    artisan.artisanCreatedDate = formatDate(artisan.artisanCreatedDate ?? "");
+    return artisan;
   }
 
   static String formatDate(String rawDate) {

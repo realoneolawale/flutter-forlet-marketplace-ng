@@ -4,6 +4,7 @@ class LoginResponseDto {
   final String lastName;
   final String token;
   final String refreshToken;
+  final String avatar;
 
   LoginResponseDto({
     this.username = '',
@@ -11,6 +12,7 @@ class LoginResponseDto {
     this.lastName = '',
     this.token = '',
     this.refreshToken = '',
+    this.avatar = '',
   });
 
   factory LoginResponseDto.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class LoginResponseDto {
       lastName: json['lastName'],
       token: json['token'],
       refreshToken: json['refreshToken'],
+      avatar: json['avatar'],
     );
   }
 }

@@ -51,7 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: appBar,
-      drawer: appDrawer(context),
+      drawer: provider.loginResponseDto == null
+          ? appDrawer(context)
+          : loginAppDrawer(context),
       body: _buildBody(provider),
     );
   }
@@ -97,14 +99,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Good Morning",
+                        getGreeting(),
                         style: AppTextStyles.body16,
                       ),
                       SizedBox(
                         height: 1.h,
                       ),
                       Text(
-                        "Charlton Uwa",
+                        provider.loginResponseDto != null
+                            ? '${provider.loginResponseDto.firstName} ${provider.loginResponseDto.lastName}'
+                            : 'Welcome',
                         style: AppTextStyles.body18Bold,
                       ),
                     ],
@@ -112,8 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   CircleAvatar(
                     radius: 50.0,
                     backgroundColor: mustard,
-                    backgroundImage:
-                        AssetImage('assets/images/splash_screen/wale.jpg'),
+                    backgroundImage: provider.loginResponseDto != null
+                        ? provider.loginResponseDto.avatar != null
+                            ? NetworkImage(provider.loginResponseDto.avatar)
+                            : AssetImage(
+                                'assets/images/splash_screen/noimage.png')
+                        : AssetImage('assets/images/splash_screen/noimage.png'),
                   ),
                 ],
               ),
@@ -645,5 +653,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  String getGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour >= 5 && hour < 12) {
+      return "Good morning";
+    } else if (hour >= 12 && hour < 17) {
+      return "Good afternoon";
+    } else {
+      return "Good evening";
+    }
   }
 }

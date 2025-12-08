@@ -47,7 +47,9 @@ class _LocationScreenState extends State<LocationScreen> {
 
     return Scaffold(
       appBar: appBar,
-      drawer: appDrawer(context),
+      drawer: provider.loginResponseDto == null
+          ? appDrawer(context)
+          : loginAppDrawer(context),
       body: SafeArea(
         child: Container(
           padding: screenPadding,

@@ -1,6 +1,7 @@
 import 'package:ForLetMarketplaceNG/provider/account_provider.dart';
+import 'package:ForLetMarketplaceNG/provider/form_validator_provider.dart';
 import 'package:ForLetMarketplaceNG/provider/home_provider.dart';
-import 'package:ForLetMarketplaceNG/screens/artisan_detail_screen.dart';
+import 'package:ForLetMarketplaceNG/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -20,12 +21,13 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => HomeProvider()),
           ChangeNotifierProvider(create: (context) => AccountProvider()),
+          ChangeNotifierProvider(create: (context) => FormValidatorProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppName,
           theme: ThemeData(),
-          home: ArtisanDetailScreen(artisanId: 17),
+          home: RegisterScreen(),
         ),
       );
     });

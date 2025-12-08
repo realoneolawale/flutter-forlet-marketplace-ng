@@ -41,7 +41,7 @@ class ArtisanFullGetDto {
   final String? artisanAvatar;
   final String? artisanshipName;
   final String? artisanshipDescription;
-  final String? artisanCreatedDate;
+  late final String? artisanCreatedDate;
   final List<ArtisanServiceDto> artisanServices;
   final List<ArtisanRequestDto> artisanRequests;
   final List<ArtisanImageDto> artisanImages;

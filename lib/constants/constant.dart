@@ -1,7 +1,9 @@
 import 'package:ForLetMarketplaceNG/constants/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../provider/home_provider.dart';
 import '../screens/home_screen.dart';
 import '../screens/location_screen.dart';
 import '../screens/login_screen.dart';
@@ -15,6 +17,8 @@ const border = OutlineInputBorder(
   borderRadius: BorderRadius.horizontal(
       left: Radius.circular(25.0), right: Radius.circular(25.0)),
 );
+
+TextStyle errorTextStyle = AppTextStyles.small10.copyWith(color: red);
 
 // app-wide box decoration
 Decoration background = BoxDecoration(
@@ -89,18 +93,6 @@ Drawer appDrawer(BuildContext context) {
         ListTile(
           title: Row(
             children: [
-              Icon(Icons.add_card_outlined),
-              SizedBox(
-                width: 2.w,
-              ),
-              Text('Post on $AppName'),
-            ],
-          ),
-          onTap: () {},
-        ),
-        ListTile(
-          title: Row(
-            children: [
               Icon(Icons.perm_contact_cal_outlined),
               SizedBox(
                 width: 2.w,
@@ -127,6 +119,84 @@ Drawer appDrawer(BuildContext context) {
   );
 }
 
+Drawer loginAppDrawer(BuildContext context) {
+  return Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        DrawerHeader(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [turquoise, mustard],
+            ),
+          ),
+          child: Row(
+            children: [
+              Image.asset(
+                'assets/images/splash_screen/forlet-logo.png',
+                width: 30,
+                height: 30,
+              ),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text("$AppName Menu"),
+            ],
+          ),
+        ),
+        ListTile(
+          title: Row(
+            children: [
+              Icon(Icons.home_outlined),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text('Home'),
+            ],
+          ),
+          onTap: () => viewHomeScreen(context),
+        ),
+        ListTile(
+          title: Row(
+            children: [
+              Icon(Icons.add_card_outlined),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text('Post on $AppName'),
+            ],
+          ),
+          onTap: () {},
+        ),
+        ListTile(
+          title: Row(
+            children: [
+              Icon(Icons.location_on_outlined),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text('Update Location'),
+            ],
+          ),
+          onTap: () => viewLocationScreen(context),
+        ),
+        ListTile(
+          title: Row(
+            children: [
+              Icon(Icons.logout_outlined),
+              SizedBox(
+                width: 2.w,
+              ),
+              Text('Logout'),
+            ],
+          ),
+          onTap: () => processLogout(context),
+        ),
+      ],
+    ),
+  );
+}
+
 // app functions
 void viewLoginScreen(BuildContext context) {
   Navigator.pushAndRemoveUntil(context,
@@ -143,4 +213,12 @@ void viewLocationScreen(BuildContext context) {
       context,
       MaterialPageRoute(builder: (context) => LocationScreen()),
       (route) => false);
+}
+
+void processLogout(BuildContext context) {
+  // clear the provider
+  final provider = Provider.of<HomeProvider>(context);
+  provider.setLogout();
+  Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context) => HomeScreen()), (route) => false);
 }
