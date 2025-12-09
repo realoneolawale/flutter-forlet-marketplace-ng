@@ -174,19 +174,19 @@ class HomeService {
 
   // register user
   Future<dynamic> registerUser(RegisterRequestDto dto) async {
-    final body = dto.toJson();
-
     final registerHeaders = {
       'X-Country': 'NG',
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
     };
 
-    final response = await client.post(Uri.parse("$baseUrl/api/auth/register"),
-        headers: registerHeaders, body: body);
+    final response = await client.post(
+        Uri.parse("$baseUrl/api/auth/register-ng-user"),
+        headers: registerHeaders,
+        body: jsonEncode(dto.toJson()));
 
     if (response.statusCode == 200) {
-      String result = json.decode(response.body);
+      print("RESPONSE: ${response.body}");
+      String result = response.body;
       return result;
     }
     return null;

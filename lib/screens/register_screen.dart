@@ -23,8 +23,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // screen variables
   StateGetDto? selectedState;
   LgasGetDto? selectedLga;
-  RegisterRequestDto dto = RegisterRequestDto();
+  RegisterRequestDto dto = RegisterRequestDto(stateId: null);
   dynamic result;
+
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController houseNumberController = TextEditingController();
+  TextEditingController streetNameController = TextEditingController();
+  TextEditingController areaNameController = TextEditingController();
+  TextEditingController stateIdController = TextEditingController();
+  TextEditingController lgaIdController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
   @override
   void initState() {
@@ -34,24 +46,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    houseNumberController.dispose();
+    streetNameController.dispose();
+    areaNameController.dispose();
+    stateIdController.dispose();
+    lgaIdController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // get the UI provider
     final validationProvider = context.watch<FormValidatorProvider>();
     final provider = Provider.of<HomeProvider>(context);
     final states = provider.stateList ?? [];
     final lgas = provider.lgaList ?? [];
-
-    TextEditingController firstNameController = TextEditingController();
-    TextEditingController lastNameController = TextEditingController();
-    TextEditingController houseNumberController = TextEditingController();
-    TextEditingController streetNameController = TextEditingController();
-    TextEditingController areaNameController = TextEditingController();
-    TextEditingController stateIdController = TextEditingController();
-    TextEditingController lgaIdController = TextEditingController();
-    TextEditingController emailController = TextEditingController();
-    TextEditingController phoneController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController confirmPasswordController = TextEditingController();
 
     return SafeArea(
       child: Scaffold(
@@ -242,19 +258,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       enabledBorder: border,
                       prefixIcon: Icon(Icons.location_on_outlined),
                       labelText: "Your state of residence",
-                      errorText: validationProvider.stateIdError,
-                      errorStyle: errorTextStyle,
+                      //errorText: validationProvider.stateIdError,
+                      // errorStyle: errorTextStyle,
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
                       setState(() {
-                        validationProvider.validateStateId;
+                        //validationProvider.validateStateId;
+                        print("VALUE: $value");
                         selectedState = value;
                         dto.stateId = value?.id ?? 1;
                         Provider.of<HomeProvider>(context, listen: false)
                             .loadLgaList(value?.id ?? 1);
-                        // update the provider state name and id value
-                        provider.setStateLocation(selectedState!);
                       });
                     },
                   ),
@@ -288,12 +303,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
-                      validationProvider.validateLgaId;
                       setState(() {
+                        validationProvider.validateLgaId;
                         selectedLga = value;
-                        dto.lgaId = value?.id ?? 1;
-                        // update the provider lga name value
-                        provider.setLgaLocation(selectedLga!);
+                        dto.lgaId = value?.id ?? 0;
                       });
                     },
                   ),
@@ -383,14 +396,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Padding(
                   padding: EdgeInsets.all(20.0),
                   child: ElevatedButton(
-                    onPressed: () {
-                      result = provider.registerUser(dto);
-
+                    onPressed: () async {
+                      // check if lga is selected
+                      if (selectedLga?.lgaName == null) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Feedback'),
+                            content: Text('Choose an L.G.A'),
+                            actions: [
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () => Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()),
+                                    (route) => false),
+                              ),
+                            ],
+                          ),
+                        );
+                        return;
+                      }
+                      // set the values for the DTO
+                      dto.firstName = firstNameController.text.trim();
+                      dto.lastName = lastNameController.text.trim();
+                      dto.email = emailController.text.trim();
+                      dto.phone = phoneController.text.trim();
+                      dto.houseNumber = houseNumberController.text.trim();
+                      dto.streetName = streetNameController.text.trim();
+                      dto.areaName = areaNameController.text.trim();
+                      dto.password = passwordController.text.trim();
+                      dto.confirmPassword =
+                          confirmPasswordController.text.trim();
+                      // register the user
+                      result = await provider.registerUser(dto);
+                      // show the registration result
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text('Success'),
-                          content: Text(result),
+                          title: Text('Feedback'),
+                          content: Text(result.toString()),
                           actions: [
                             TextButton(
                               child: const Text('OK'),
@@ -408,10 +454,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       backgroundColor: turquoise,
                       fixedSize: const Size(350, 50),
                     ),
-                    child: const Text(
-                      'Register',
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                    ),
+                    child: provider.isLoading
+                        ? CircularProgressIndicator()
+                        : const Text(
+                            'Register',
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                          ),
                   ),
                 ),
                 SizedBox(

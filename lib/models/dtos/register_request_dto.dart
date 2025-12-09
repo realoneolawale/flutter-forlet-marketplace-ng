@@ -1,18 +1,18 @@
 class RegisterRequestDto {
-  late final String? firstName;
-  late final String? lastName;
-  late final String? email;
-  late final String? gender;
-  late final String? phone;
-  late final String? houseNumber;
-  late final String? streetName;
-  late final String? areaName;
-  late final String? address;
-  late final String? avatar;
-  late final int? stateId;
-  late final int? lgaId;
-  late final String? password;
-  late final String? confirmPassword;
+  late String? firstName;
+  late String? lastName;
+  late String? email;
+  late String? gender;
+  late String? phone;
+  late String? houseNumber;
+  late String? streetName;
+  late String? areaName;
+  late String? address;
+  late String? avatar;
+  late int? stateId;
+  late int? lgaId;
+  late String? password;
+  late String? confirmPassword;
 
   RegisterRequestDto({
     this.firstName,
